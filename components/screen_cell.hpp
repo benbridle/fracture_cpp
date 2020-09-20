@@ -6,7 +6,7 @@ struct ScreenCell {
     char32_t character;
 
     ScreenCell() {
-        this->character = '.';
+        this->character = ' ';
     }
 
     ScreenCell(char32_t character) {

@@ -2,25 +2,32 @@
 #include "components/widget.hpp"
 #include "iostream"
 #include "utils/terminal_info.hpp"
+#include "widgets/decorated_window.hpp"
 
 struct Fracture {
-    Widget root_widget;
+    // Store as a pointer to prevent 'object slicing'
+    Widget *root_widget;
 
     Fracture() {
     }
 
-    void set_root_widget(Widget new_root_widget) {
-        this->root_widget = new_root_widget;
+    Fracture(Widget &root_widget) {
+        this->root_widget = &root_widget;
+    }
+
+    void set_root_widget(Widget &new_root_widget) {
+        this->root_widget = &new_root_widget;
     }
 
     void render_to_viewport() {
-        unsigned short width = terminal::get_width() - 20;
-        unsigned short height = terminal::get_height() - 2;
-        Screen s = Screen(width, height);
+        // TODO: Remove the shrinkage here
+        Screen viewport = Screen(terminal::get_width() - 1, terminal::get_height() - 2);
 
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                ScreenCell sc = s.get_screen_cell(x, y);
+        this->root_widget->render(viewport);
+
+        for (int y = 0; y < viewport.height; y++) {
+            for (int x = 0; x < viewport.width; x++) {
+                ScreenCell sc = viewport.get_screen_cell(x, y);
                 std::cout << sc.to_string();
             }
             std::cout << std::endl;
@@ -29,6 +36,7 @@ struct Fracture {
 };
 
 int main() {
-    Fracture frac = Fracture();
+    DecoratedWindow dw = DecoratedWindow();
+    Fracture frac = Fracture(dw);
     frac.render_to_viewport();
 }

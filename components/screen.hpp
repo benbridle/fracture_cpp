@@ -33,6 +33,10 @@ struct Screen {
         return this->content[y][x];
     }
 
+    void draw(int x, int y, char32_t new_character) {
+        this->content[y][x].character = new_character;
+    }
+
 private:
     bool is_valid_screen_coordinates(unsigned short x, unsigned short y) {
         if (x >= this->width || y >= this->height || x < 0 || y < 0) {
