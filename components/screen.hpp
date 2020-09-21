@@ -27,21 +27,19 @@ struct Screen {
     }
 
     ScreenCell get_screen_cell(unsigned short x, unsigned short y) {
-        if (!is_valid_screen_coordinates(x, y)) {
-            throw invalid_argument("Given coordinates are out of bounds");
-        }
+        assert_is_valid_screen_coordinates(x, y);
         return this->content[y][x];
     }
 
     void draw(int x, int y, char32_t new_character) {
+        assert_is_valid_screen_coordinates(x, y);
         this->content[y][x].character = new_character;
     }
 
 private:
-    bool is_valid_screen_coordinates(unsigned short x, unsigned short y) {
+    void assert_is_valid_screen_coordinates(unsigned short x, unsigned short y) {
         if (x >= this->width || y >= this->height || x < 0 || y < 0) {
-            return false;
+            throw invalid_argument("Given coordinates are out of bounds");
         }
-        return true;
     }
 };
