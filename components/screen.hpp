@@ -31,14 +31,50 @@ struct Screen {
         return this->content[y][x];
     }
 
-    void draw(int x, int y, char32_t new_character) {
+    void set_screen_cell(unsigned short x, unsigned short y, ScreenCell sc) {
         assert_is_valid_screen_coordinates(x, y);
-        this->content[y][x].character = new_character;
+        this->content[y][x] = sc;
     }
 
+    bool draw(int x, int y, char32_t new_character) {
+        if (!is_valid_screen_coordinates(x, y)) {
+            return false;
+        };
+        this->content[y][x].character = new_character;
+        return true;
+    }
+
+    bool draw(int x, int y, Screen screen) {
+        // Draws a Screen onto this screen, with the top-left corner at the specified point
+        // Returns `true` if provided screen is contained within this screen, `false` otherwise
+
+        bool success_state = true;
+        ScreenCell transplant;
+
+        for (int y_offset = 0; y_offset < screen.height; y_offset++) {
+            for (int x_offset = 0; x_offset < screen.width; x_offset++) {
+                if (!is_valid_screen_coordinates(x + x_offset, y + y_offset)) {
+                    success_state = false;
+                    continue;
+                }
+                transplant = screen.get_screen_cell(x_offset, y_offset);
+                this->set_screen_cell(x + x_offset, y + y_offset, transplant);
+            }
+        }
+        return success_state;
+    }
+
+    // TODO: Add a draw(string) method, then refactor the DecoratedWindow title drawing for loop.
+
 private:
-    void assert_is_valid_screen_coordinates(unsigned short x, unsigned short y) {
+    bool is_valid_screen_coordinates(unsigned short x, unsigned short y) {
         if (x >= this->width || y >= this->height || x < 0 || y < 0) {
+            return false;
+        };
+        return true;
+    }
+    void assert_is_valid_screen_coordinates(unsigned short x, unsigned short y) {
+        if (!is_valid_screen_coordinates(x, y)) {
             throw invalid_argument("Given coordinates are out of bounds");
         }
     }

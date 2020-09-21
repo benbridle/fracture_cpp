@@ -3,16 +3,33 @@
 
 struct DecoratedWindow : Widget {
     std::string title;
+    Widget *sub_widget = NULL;
 
     DecoratedWindow() {
         this->title = "";
+        this->sub_widget;
     }
 
     DecoratedWindow(std::string new_title) {
         this->title = new_title;
+        this->sub_widget;
+    }
+
+    void set_sub_widget(Widget &sub_widget) {
+        this->sub_widget = &sub_widget;
+    }
+
+    void render_sub_widget(Screen &screen) {
+        if (this->sub_widget) {
+            this->sub_widget->render(screen);
+        };
     }
 
     void render(Screen &screen) {
+        Screen sub_screen = Screen(screen.width - 2, screen.height - 2);
+        this->render_sub_widget(sub_screen);
+        screen.draw(1, 1, sub_screen);
+
         unsigned short right = screen.width - 1;
         unsigned short bottom = screen.height - 1;
 
@@ -34,14 +51,14 @@ struct DecoratedWindow : Widget {
             return;
         };
 
+        // Add a gap to either side of the title
+        std::string title = ' ' + this->title + ' ';
         // Calculate the horizontal offset needed to shift the title to
         //  the center of the frame
-        int offset = ((screen.width - 2) - this->title.length()) / 2;
-        int i = 0;
-        // Add a gap to either side of the title
-        for (char c : ' ' + this->title + ' ') {
+        int offset = ((screen.width - 2) - title.length()) / 2;
+        for (int i = 0; i < title.length(); i++) {
+            char c = title[i];
             screen.draw(i + offset, 0, c);
-            i++;
         };
     };
 };

@@ -36,7 +36,9 @@ struct Fracture {
 };
 
 int main() {
+    DecoratedWindow inner = DecoratedWindow("Inner window");
     DecoratedWindow dw = DecoratedWindow("Window");
+    dw.set_sub_widget(inner);
     Fracture frac = Fracture(dw);
     frac.render_to_viewport();
 }
