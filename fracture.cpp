@@ -36,7 +36,7 @@ struct Fracture {
 };
 
 int main() {
-    DecoratedWindow dw = DecoratedWindow();
+    DecoratedWindow dw = DecoratedWindow("Window");
     Fracture frac = Fracture(dw);
     frac.render_to_viewport();
 }
