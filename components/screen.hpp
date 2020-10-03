@@ -1,4 +1,5 @@
 #pragma once
+#include "point.hpp"
 #include "screen_cell.hpp"
 #include <stdexcept>
 #include <vector>
@@ -12,6 +13,10 @@ struct Screen {
     Screen() {}
 
     Screen(unsigned short width, unsigned short height) {
+
+        this->width = width;
+        this->height = height;
+
         // Set size of outer vector
         this->content = vector<vector<ScreenCell>>(height);
         for (int y = 0; y < height; y++) {
@@ -19,46 +24,44 @@ struct Screen {
             this->content[y] = vector<ScreenCell>(width);
             for (int x = 0; x < width; x++) {
                 // Initialise each character of the row
-                this->content[y][x] = ScreenCell();
+                this->set_screen_cell(Point(x, y), ScreenCell{U' '});
             };
         };
-        this->width = width;
-        this->height = height;
     }
 
-    ScreenCell get_screen_cell(unsigned short x, unsigned short y) {
-        assert_is_valid_screen_coordinates(x, y);
-        return this->content[y][x];
+    ScreenCell get_screen_cell(Point p) {
+        assert_is_valid_screen_coordinates(p);
+        return this->content[p.y][p.x];
     }
 
-    void set_screen_cell(unsigned short x, unsigned short y, ScreenCell sc) {
-        assert_is_valid_screen_coordinates(x, y);
-        this->content[y][x] = sc;
+    void set_screen_cell(Point p, ScreenCell sc) {
+        assert_is_valid_screen_coordinates(p);
+        this->content[p.y][p.x] = sc;
     }
 
-    bool draw(int x, int y, char32_t new_character) {
-        if (!is_valid_screen_coordinates(x, y)) {
+    bool draw(Point p, char32_t new_character) {
+        if (!is_valid_screen_coordinates(p)) {
             return false;
         };
-        this->content[y][x].character = new_character;
+        this->content[p.y][p.x].character = new_character;
         return true;
     }
 
-    bool draw(int x, int y, Screen screen) {
+    bool draw(Point p, Screen screen) {
         // Draws a Screen onto this screen, with the top-left corner at the specified point
-        // Returns `true` if provided screen is contained within this screen, `false` otherwise
+        // Returns `true` if provided screen is fully contained within this screen, `false` otherwise
 
         bool success_state = true;
         ScreenCell transplant;
 
-        for (int y_offset = 0; y_offset < screen.height; y_offset++) {
-            for (int x_offset = 0; x_offset < screen.width; x_offset++) {
-                if (!is_valid_screen_coordinates(x + x_offset, y + y_offset)) {
+        for (int y = 0; y < screen.height; y++) {
+            for (int x = 0; x < screen.width; x++) {
+                if (!is_valid_screen_coordinates(p + Point(x, y))) {
                     success_state = false;
                     continue;
                 }
-                transplant = screen.get_screen_cell(x_offset, y_offset);
-                this->set_screen_cell(x + x_offset, y + y_offset, transplant);
+                transplant = screen.get_screen_cell(p);
+                this->set_screen_cell(p + Point(x, y), transplant);
             }
         }
         return success_state;
@@ -67,14 +70,14 @@ struct Screen {
     // TODO: Add a draw(string) method, then refactor the DecoratedWindow title drawing for loop.
 
 private:
-    bool is_valid_screen_coordinates(unsigned short x, unsigned short y) {
-        if (x >= this->width || y >= this->height || x < 0 || y < 0) {
+    bool is_valid_screen_coordinates(Point p) {
+        if (p.x >= this->width || p.y >= this->height || p.x < 0 || p.y < 0) {
             return false;
         };
         return true;
     }
-    void assert_is_valid_screen_coordinates(unsigned short x, unsigned short y) {
-        if (!is_valid_screen_coordinates(x, y)) {
+    void assert_is_valid_screen_coordinates(Point p) {
+        if (!is_valid_screen_coordinates(p)) {
             throw invalid_argument("Given coordinates are out of bounds");
         }
     }

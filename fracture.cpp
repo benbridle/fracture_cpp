@@ -27,7 +27,7 @@ struct Fracture {
 
         for (int y = 0; y < viewport.height; y++) {
             for (int x = 0; x < viewport.width; x++) {
-                ScreenCell sc = viewport.get_screen_cell(x, y);
+                ScreenCell sc = viewport.get_screen_cell(Point(x, y));
                 std::cout << sc.to_string();
             }
             std::cout << std::endl;
@@ -37,7 +37,7 @@ struct Fracture {
 
 int main() {
     DecoratedWindow inner = DecoratedWindow("Inner window");
-    DecoratedWindow dw = DecoratedWindow("Window");
+    DecoratedWindow dw = DecoratedWindow("Outer window");
     dw.set_sub_widget(inner);
     Fracture frac = Fracture(dw);
     frac.render_to_viewport();
