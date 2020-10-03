@@ -1,6 +1,7 @@
 #include "components/screen.hpp"
 #include "components/widget.hpp"
 #include "iostream"
+#include "utils/terminal_formatting.hpp"
 #include "utils/terminal_info.hpp"
 #include "widgets/decorated_window.hpp"
 #include "widgets/label.hpp"
@@ -29,10 +30,19 @@ struct Fracture {
         for (int y = 0; y < viewport.height; y++) {
             for (int x = 0; x < viewport.width; x++) {
                 ScreenCell sc = viewport.get_screen_cell(Point(x, y));
-                std::cout << sc.to_string();
+                render_screencell(sc);
             }
             std::cout << std::endl;
         }
+    }
+
+private:
+    void render_screencell(ScreenCell sc) {
+        if (sc.foreground_colour) {
+            terminal::set_foreground_colour(sc.foreground_colour.value());
+        }
+        std::cout << sc.to_string();
+        terminal::reset_colours();
     }
 };
 

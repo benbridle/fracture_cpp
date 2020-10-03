@@ -14,6 +14,10 @@ struct Point {
         this->y = y;
     }
 
+    static Point zero() {
+        return Point(0, 0);
+    }
+
     Point operator+(Point other) {
         return Point(this->x + other.x, this->y + other.y);
     }
