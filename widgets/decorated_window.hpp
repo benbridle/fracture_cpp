@@ -22,27 +22,14 @@ struct DecoratedWindow : Widget {
     }
 
     void render_sub_widget(Screen &screen) {
-        screen.draw(Point(1, 1), '^');
         if (this->sub_widget) {
-
-            // this->sub_widget->render(screen);
-            // I think that the screen isn't being passed by reference, but
-            //  instead is being passed by value. The widget correctly renders
-            //  itself to the screen in the above line.
-            screen.draw(Point(1, 1), '^');
-            screen.draw(Point(2, 2), 'D');
-            // And yet, curiously, when a character is drawn to position (1,1) it
-            //  clones itself across the entire Screen. But not when in any other
-            //  position. This is the only way to get characters to draw down to
-            //  the parent screen from here.
+            this->sub_widget->render(screen);
         };
     }
 
     void render(Screen &screen) {
         Screen sub_screen = Screen(screen.width - 2, screen.height - 2);
-        // this->render_sub_widget(sub_screen);
-        sub_screen.draw(Point(2, 2), '&');
-        // Drawing the subscreen onto the screen at (1,1) doesn't print anything
+        this->render_sub_widget(sub_screen);
 
         screen.draw(Point(1, 1), sub_screen);
 

@@ -60,8 +60,8 @@ struct Screen {
                     success_state = false;
                     continue;
                 }
-                transplant = screen.get_screen_cell(p);
-                this->set_screen_cell(p + Point(x, y), transplant);
+                transplant = screen.get_screen_cell(Point(x, y));
+                this->set_screen_cell(Point(x, y) + p, transplant);
             }
         }
         return success_state;
