@@ -3,6 +3,7 @@
 #include "iostream"
 #include "utils/terminal_info.hpp"
 #include "widgets/decorated_window.hpp"
+#include "widgets/label.hpp"
 
 struct Fracture {
     // Store as a pointer to prevent 'object slicing'
@@ -36,9 +37,11 @@ struct Fracture {
 };
 
 int main() {
+    Label label = Label("Test");
     DecoratedWindow inner = DecoratedWindow("Inner window");
     DecoratedWindow dw = DecoratedWindow("Outer window");
     dw.set_sub_widget(inner);
+    inner.set_sub_widget(label);
     Fracture frac = Fracture(dw);
     frac.render_to_viewport();
 }

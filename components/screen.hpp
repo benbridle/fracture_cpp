@@ -2,6 +2,7 @@
 #include "point.hpp"
 #include "screen_cell.hpp"
 #include <stdexcept>
+#include <string>
 #include <vector>
 using namespace std;
 
@@ -47,9 +48,21 @@ struct Screen {
         return true;
     }
 
-    bool draw(Point p, Screen screen) {
-        // Draws a Screen onto this screen, with the top-left corner at the specified point
-        // Returns `true` if provided screen is fully contained within this screen, `false` otherwise
+    bool draw(Point p, string text) {
+        bool success_state = true;
+        for (int i = 0; i < text.length(); i++) {
+            if (!this->draw(Point(i, 0) + p, text[i])) {
+                success_state = false;
+            }
+        }
+        return success_state;
+    }
+
+    bool
+    draw(Point p, Screen screen) {
+        // Draws a Screen onto this screen, with the top-left corner at the
+        // specified point. Returns `true` if provided screen is fully contained
+        // within this screen, `false` otherwise
 
         bool success_state = true;
         ScreenCell transplant;
