@@ -58,8 +58,7 @@ struct Screen {
         return success_state;
     }
 
-    bool
-    draw(Point p, Screen screen) {
+    bool draw(Point p, Screen screen) {
         // Draws a Screen onto this screen, with the top-left corner at the
         // specified point. Returns `true` if provided screen is fully contained
         // within this screen, `false` otherwise
@@ -79,8 +78,6 @@ struct Screen {
         }
         return success_state;
     }
-
-    // TODO: Add a draw(string) method, then refactor the DecoratedWindow title drawing for loop.
 
 private:
     bool is_valid_screen_coordinates(Point p) {

@@ -59,10 +59,6 @@ struct DecoratedWindow : Widget {
         // Calculate the horizontal offset needed to shift the title to
         //  the center of the frame
         int offset = ((screen.width - 2) - title.length()) / 2;
-        for (int i = 0; i < title.length(); i++) {
-            char c = title[i];
-            // TODO: Implement drawing a string to a Screen in order to tidy this up
-            screen.draw(Point(i + offset, 0), c);
-        };
+        screen.draw(Point(offset, 0), title);
     };
 };
