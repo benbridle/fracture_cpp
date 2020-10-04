@@ -2,6 +2,7 @@
 #include "../components/point.hpp"
 #include "../components/screen.hpp"
 #include "../components/widget.hpp"
+#include <stdexcept>
 
 struct ClipWidget : Widget {
     Clip clip;
@@ -13,36 +14,39 @@ struct ClipWidget : Widget {
     void render(Screen &screen) {
         unsigned int bucket_size = this->clip.size() / screen.width;
         for (int x = 0; x < screen.width; x++) {
+            // The sum of the values of all samples in the bucket
             double sum = 0;
             for (int i = bucket_size * x; i < bucket_size * (x + 1); i++) {
                 sum += this->clip.get_sample(i).value;
             }
+            // the average of all samples in the bucket
             double average = sum / bucket_size;
-            screen.draw(Point(x, 0), sample_to_screencell(average));
+            int y = screen.height - 1;
+            // Number of different height block glyphs
+            int number_of_glyphs = 8;
+            int view_units = average * screen.height * number_of_glyphs;
+            while (view_units > number_of_glyphs) {
+                view_units -= number_of_glyphs;
+                screen.draw(Point(x, y), ScreenCell(int_to_block_glyph(8)));
+                y--;
+            }
+            screen.draw(Point(x, y), ScreenCell(int_to_block_glyph(view_units)));
         }
     }
 
 private:
-    ScreenCell sample_to_screencell(double sample) {
-        char32_t character;
-        if (sample < 1 / 8.0) {
-            character = U'▁';
-        } else if (sample < 2 / 8.0) {
-            character = U'▂';
-        } else if (sample < 3 / 8.0) {
-            character = U'▃';
-        } else if (sample < 4 / 8.0) {
-            character = U'▄';
-        } else if (sample < 5 / 8.0) {
-            character = U'▅';
-        } else if (sample < 6 / 8.0) {
-            character = U'▆';
-        } else if (sample < 7 / 8.0) {
-            character = U'▇';
-        } else {
-            character = U'█';
+    char32_t int_to_block_glyph(int index) {
+        switch (index) {
+        case 0: return U' ';
+        case 1: return U'▁';
+        case 2: return U'▂';
+        case 3: return U'▃';
+        case 4: return U'▄';
+        case 5: return U'▅';
+        case 6: return U'▆';
+        case 7: return U'▇';
+        case 8: return U'█';
+        default: throw invalid_argument("Glyph index is invalid");
         }
-
-        return ScreenCell(character);
     }
 };

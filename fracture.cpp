@@ -59,9 +59,11 @@ int main() {
     for (double i = 0; i < 90000; i++) {
         c.append_sample(0.5 * (1 + sin(2 * M_PI * 3 * (i / 48000))));
     }
+
     ClipWidget cw = ClipWidget(c);
     DecoratedWindow inner = DecoratedWindow("Inner window");
     DecoratedWindow outer = DecoratedWindow("Outer window");
+
     inner.set_sub_widget(cw);
     outer.set_sub_widget(inner);
     Fracture frac = Fracture(outer);

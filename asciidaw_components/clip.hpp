@@ -26,7 +26,7 @@ struct Clip {
 private:
     void assert_is_index_in_bounds(int index) {
         if (!is_index_in_bounds(index)) {
-            throw std::invalid_argument("Index is out of bounds");
+            throw std::invalid_argument("Sample index is out of bounds");
         }
     }
     bool is_index_in_bounds(int index) {
