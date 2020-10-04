@@ -1,10 +1,14 @@
+#include "asciidaw_components/clip.hpp"
 #include "components/screen.hpp"
 #include "components/widget.hpp"
 #include "iostream"
 #include "utils/terminal_formatting.hpp"
 #include "utils/terminal_info.hpp"
+#include "widgets/clip_widget.hpp"
 #include "widgets/decorated_window.hpp"
 #include "widgets/label.hpp"
+#include <math.h>
+#define _USE_MATH_DEFINES // For M_PI
 
 struct Fracture {
     // Store as a pointer to prevent 'object slicing'
@@ -41,17 +45,25 @@ private:
         if (sc.foreground_colour) {
             terminal::set_foreground_colour(sc.foreground_colour.value());
         }
+        if (sc.background_colour) {
+            terminal::set_background_colour(sc.background_colour.value());
+        }
         std::cout << sc.to_string();
         terminal::reset_colours();
     }
 };
 
 int main() {
-    Label label = Label("Test");
+    Clip c = Clip();
+    // `i` is `double` so that division is double division, not integer division
+    for (double i = 0; i < 90000; i++) {
+        c.append_sample(0.5 * (1 + sin(2 * M_PI * 3 * (i / 48000))));
+    }
+    ClipWidget cw = ClipWidget(c);
     DecoratedWindow inner = DecoratedWindow("Inner window");
-    DecoratedWindow dw = DecoratedWindow("Outer window");
-    dw.set_sub_widget(inner);
-    inner.set_sub_widget(label);
-    Fracture frac = Fracture(dw);
+    DecoratedWindow outer = DecoratedWindow("Outer window");
+    inner.set_sub_widget(cw);
+    outer.set_sub_widget(inner);
+    Fracture frac = Fracture(outer);
     frac.render_to_viewport();
 }

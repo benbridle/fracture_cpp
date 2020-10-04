@@ -40,6 +40,14 @@ struct Screen {
         this->content[p.y][p.x] = sc;
     }
 
+    bool draw(Point p, ScreenCell sc) {
+        if (!is_valid_screen_coordinates(p)) {
+            return false;
+        };
+        this->set_screen_cell(p, sc);
+        return true;
+    }
+
     bool draw(Point p, char32_t new_character) {
         if (!is_valid_screen_coordinates(p)) {
             return false;
@@ -88,7 +96,7 @@ private:
     }
     void assert_is_valid_screen_coordinates(Point p) {
         if (!is_valid_screen_coordinates(p)) {
-            throw invalid_argument("Given coordinates are out of bounds");
+            throw invalid_argument("Coordinates are out of bounds");
         }
     }
 };

@@ -24,7 +24,7 @@ struct Colour {
 private:
     void assert_is_valid_channel_value(float channel_value) {
         if (!is_valid_channel_value(channel_value)) {
-            throw std::invalid_argument("Given channel value is out of bounds");
+            throw std::invalid_argument("Channel value is out of bounds");
         }
     }
 
