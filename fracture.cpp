@@ -11,6 +11,7 @@
 #include "widgets/label.hpp"
 #include <math.h>
 #include <random>
+#include <stdlib.h>
 #define _USE_MATH_DEFINES // For M_PI
 
 struct Fracture {
@@ -18,14 +19,15 @@ struct Fracture {
     Widget *root_widget;
 
     Fracture() {
-        // terminal::enable_raw_mode();
+        terminal::enable_raw_mode();
     }
 
     ~Fracture() {
-        // terminal::disable_raw_mode();
+        terminal::disable_raw_mode();
     }
 
     Fracture(Widget &root_widget) {
+        terminal::enable_raw_mode();
         this->root_widget = &root_widget;
     }
 
@@ -62,24 +64,30 @@ private:
 };
 
 int main() {
-    Clip c = Clip();
+    // Clip c = Clip();
     // `i` is `double` so that division is double division, not integer division
-    for (double i = 0; i < 90000; i++) {
-        // c.append_sample(0.5 * (1 + sin(2 * M_PI * 3 * (i / 48000))));
-        c.append_sample((double)random() / RAND_MAX);
-    }
+    // for (double i = 0; i < 90000; i++) {
+    // c.append_sample(0.5 * (1 + sin(2 * M_PI * 3 * (i / 48000))));
+    // c.append_sample((double)random() / RAND_MAX);
+    // }
 
-    ClipWidget cw = ClipWidget(c);
+    // ClipWidget cw = ClipWidget(c);
     Label label = Label("1");
     DecoratedWindow inner = DecoratedWindow("Inner window");
     DecoratedWindow outer = DecoratedWindow("Outer window");
 
-    inner.set_sub_widget(cw);
+    inner.set_sub_widget(label);
     outer.set_sub_widget(inner);
     Fracture frac = Fracture(outer);
 
-    KeyPress kp = KeyPress(Key::K_P, ModifierKey::Control | ModifierKey::Shift);
-    label.text = to_string(kp);
+    // while (true) {
+    //     std::optional<KeyPress> kpo = terminal::get_key();
+    //     if (kpo) {
+    //         label.text = to_string(kpo.value());
+    //     };
+    //     frac.render_to_viewport();
+    //     sleep(1);
+    // }
     frac.render_to_viewport();
 
     // for (int i = 0; i < 100; i++) {

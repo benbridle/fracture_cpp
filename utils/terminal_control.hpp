@@ -24,15 +24,6 @@ namespace terminal {
         tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
     }
 
-    std::optional<KeyPress> get_key() {
-        int keycode = getchar();
-        if (keycode_to_keypress.count(keycode) == 0) {
-            return std::optional<KeyPress>();
-        } else {
-            return keycode_to_keypress.at(keycode);
-        };
-    }
-
     int kbhit() {
         // Returns the number of characters waiting to be read from stdin
         static const int STDIN = 0;
@@ -47,5 +38,19 @@ namespace terminal {
         int bytesWaiting;
         ioctl(STDIN, FIONREAD, &bytesWaiting);
         return bytesWaiting;
+    }
+
+    std::optional<KeyPress> get_key() {
+        int keycode = 0;
+        if (kbhit() > 0) {
+            keycode = getchar();
+        } else {
+            return std::optional<KeyPress>();
+        };
+        if (keycode_to_keypress.count(keycode) == 0) {
+            return std::optional<KeyPress>();
+        } else {
+            return keycode_to_keypress.at(keycode);
+        };
     }
 } // namespace terminal
