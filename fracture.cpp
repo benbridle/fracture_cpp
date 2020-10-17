@@ -92,18 +92,23 @@ int main() {
     outer.set_sub_widget(inner);
     Fracture frac = Fracture(outer);
 
-    // while (true) {
-    //     std::optional<KeyPress> kpo = terminal::get_key();
-    //     if (kpo) {
-    //         label.text = to_string(kpo.value());
-    //     };
-    //     frac.render_to_viewport();
-    //     sleep(1);
-    // }
     frac.render_to_viewport();
 
-    for (int i = 0; i < 500; i++) {
-        label.text = std::to_string(i);
-        frac.render_to_viewport();
+    while (true) {
+        std::optional<KeyPress> kpo = terminal::get_key();
+        if (kpo) {
+            label.text = to_pretty_string(kpo.value());
+            frac.render_to_viewport();
+            if (kpo.value() == KeyPress(Key::K_Q, ModifierKey::Control)) {
+                break;
+            }
+        };
     }
+
+    // frac.render_to_viewport();
+
+    // for (int i = 0; i < 500; i++) {
+    //     label.text = std::to_string(i);
+    //     frac.render_to_viewport();
+    // }
 }

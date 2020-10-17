@@ -54,3 +54,14 @@ std::string to_string(KeyPress kp) {
     }
     return output;
 }
+
+std::string to_pretty_string(KeyPress kp) {
+    std::string output = "";
+    if (kp.modifier_keys & ModifierKey::Control) output += "Control+";
+    if (kp.modifier_keys & ModifierKey::Shift) output += "Shift+";
+    if (kp.modifier_keys & ModifierKey::Alt) output += "Alt+";
+    if (key_to_name.count(kp.key) > 0) {
+        output += key_to_name.at(kp.key);
+    }
+    return output;
+}
