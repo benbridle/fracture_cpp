@@ -12,6 +12,7 @@
 #include "widgets/label.hpp"
 #include <math.h>
 #include <random>
+#include <unistd.h>
 #define _USE_MATH_DEFINES // For M_PI
 
 struct Fracture {
@@ -40,20 +41,22 @@ struct Fracture {
         Screen viewport = Screen(terminal::get_width() - 1, terminal::get_height() - 2);
 
         this->root_widget->render(viewport);
+        for (int y = 0; y < viewport.height; y++) {
+            terminal::cursor::line_feed();
+        }
 
-        // terminal::cursor::move_to_top_left();
+        terminal::cursor::move_to_top_left();
         for (int y = 0; y < viewport.height; y++) {
             for (int x = 0; x < viewport.width; x++) {
-                const ScreenCell sc = viewport.get_screen_cell(Point(x, y));
+                ScreenCell sc = viewport.get_screen_cell(Point(x, y));
                 render_screencell(sc);
             }
             terminal::cursor::carriage_return();
-            terminal::cursor::line_feed();
         }
     }
 
 private:
-    void render_screencell(ScreenCell sc) const {
+    void render_screencell(ScreenCell &sc) {
         // if (sc.foreground_colour) {
         //     terminal::set_foreground_colour(sc.foreground_colour.value());
         // }
@@ -99,8 +102,9 @@ int main() {
     // }
     frac.render_to_viewport();
 
-    for (int i = 0; i < 500; i++) {
+    for (int i = 0; i < 5; i++) {
         label.text = std::to_string(i);
         frac.render_to_viewport();
+        usleep(100000);
     }
 }
