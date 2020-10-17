@@ -18,11 +18,11 @@ struct Sample {
 private:
     void assert_is_sample_in_bounds(double sample) {
         if (!is_sample_in_bounds(sample)) {
-            throw std::invalid_argument("Sample must be between 0 and 1 (inclusive)");
+            throw std::invalid_argument("Sample must be between -1 and 1 (inclusive)");
         }
     }
     bool is_sample_in_bounds(double sample) {
-        if (0 <= sample && sample <= 1) {
+        if (-1 <= sample && sample <= 1) {
             return true;
         }
         return false;

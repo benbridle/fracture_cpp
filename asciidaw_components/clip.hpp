@@ -6,6 +6,7 @@
 
 struct Clip {
     std::vector<Sample> audio_data;
+    std::string name; // a user-provided name for display purposes
 
     Clip() {
     }
