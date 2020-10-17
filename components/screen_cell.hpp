@@ -34,7 +34,7 @@ struct ScreenCell {
         this->background_colour = new_colour;
     }
 
-    std::string to_string() {
+    std::string to_string() const {
         using namespace std;
         wstring_convert<codecvt_utf8<char32_t>, char32_t> converter;
         return converter.to_bytes(this->character);

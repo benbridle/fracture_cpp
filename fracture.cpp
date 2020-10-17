@@ -4,6 +4,7 @@
 #include "components/widget.hpp"
 #include "iostream"
 #include "utils/terminal_control.hpp"
+#include "utils/terminal_cursor.hpp"
 #include "utils/terminal_formatting.hpp"
 #include "utils/terminal_info.hpp"
 #include "widgets/clip_widget.hpp"
@@ -11,7 +12,6 @@
 #include "widgets/label.hpp"
 #include <math.h>
 #include <random>
-#include <stdlib.h>
 #define _USE_MATH_DEFINES // For M_PI
 
 struct Fracture {
@@ -41,25 +41,34 @@ struct Fracture {
 
         this->root_widget->render(viewport);
 
+        // terminal::cursor::move_to_top_left();
         for (int y = 0; y < viewport.height; y++) {
             for (int x = 0; x < viewport.width; x++) {
-                ScreenCell sc = viewport.get_screen_cell(Point(x, y));
+                const ScreenCell sc = viewport.get_screen_cell(Point(x, y));
                 render_screencell(sc);
             }
-            std::cout << std::endl;
+            terminal::cursor::carriage_return();
+            terminal::cursor::line_feed();
         }
     }
 
 private:
-    void render_screencell(ScreenCell sc) {
-        if (sc.foreground_colour) {
-            terminal::set_foreground_colour(sc.foreground_colour.value());
-        }
-        if (sc.background_colour) {
-            terminal::set_background_colour(sc.background_colour.value());
-        }
+    void render_screencell(ScreenCell sc) const {
+        // if (sc.foreground_colour) {
+        //     terminal::set_foreground_colour(sc.foreground_colour.value());
+        // }
+        // if (sc.background_colour) {
+        //     terminal::set_background_colour(sc.background_colour.value());
+        // }
+
         std::cout << sc.to_string();
-        terminal::reset_colours();
+
+        // if (sc.foreground_colour) {
+        //     terminal::reset_foreground_colour();
+        // }
+        // if (sc.background_colour) {
+        //     terminal::reset_background_colour();
+        // }
     }
 };
 
@@ -72,7 +81,7 @@ int main() {
     // }
 
     // ClipWidget cw = ClipWidget(c);
-    Label label = Label("1");
+    Label label = Label("Z");
     DecoratedWindow inner = DecoratedWindow("Inner window");
     DecoratedWindow outer = DecoratedWindow("Outer window");
 
@@ -90,8 +99,8 @@ int main() {
     // }
     frac.render_to_viewport();
 
-    // for (int i = 0; i < 100; i++) {
-    //     label.text = std::to_string(i);
-    //     frac.render_to_viewport();
-    // }
+    for (int i = 0; i < 500; i++) {
+        label.text = std::to_string(i);
+        frac.render_to_viewport();
+    }
 }
