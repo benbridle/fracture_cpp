@@ -19,17 +19,20 @@ struct Fracture {
     // Store as a pointer to prevent 'object slicing'
     Widget *root_widget;
 
-    Fracture() {
+    Fracture(Widget &root_widget) {
+        this->set_root_widget(root_widget);
         terminal::enable_raw_mode();
+        terminal::cursor::hide();
+
+        // Scroll display to clear it
+        for (int y = 0; y < terminal::get_height(); y++) {
+            terminal::cursor::line_feed();
+        }
     }
 
     ~Fracture() {
         terminal::disable_raw_mode();
-    }
-
-    Fracture(Widget &root_widget) {
-        terminal::enable_raw_mode();
-        this->root_widget = &root_widget;
+        terminal::cursor::show();
     }
 
     void set_root_widget(Widget &new_root_widget) {
@@ -41,9 +44,6 @@ struct Fracture {
         Screen viewport = Screen(terminal::get_width() - 1, terminal::get_height() - 2);
 
         this->root_widget->render(viewport);
-        for (int y = 0; y < viewport.height; y++) {
-            terminal::cursor::line_feed();
-        }
 
         terminal::cursor::move_to_top_left();
         for (int y = 0; y < viewport.height; y++) {
@@ -57,21 +57,21 @@ struct Fracture {
 
 private:
     void render_screencell(ScreenCell &sc) {
-        // if (sc.foreground_colour) {
-        //     terminal::set_foreground_colour(sc.foreground_colour.value());
-        // }
-        // if (sc.background_colour) {
-        //     terminal::set_background_colour(sc.background_colour.value());
-        // }
+        if (sc.foreground_colour) {
+            terminal::set_foreground_colour(sc.foreground_colour.value());
+        }
+        if (sc.background_colour) {
+            terminal::set_background_colour(sc.background_colour.value());
+        }
 
         std::cout << sc.to_string();
 
-        // if (sc.foreground_colour) {
-        //     terminal::reset_foreground_colour();
-        // }
-        // if (sc.background_colour) {
-        //     terminal::reset_background_colour();
-        // }
+        if (sc.foreground_colour) {
+            terminal::reset_foreground_colour();
+        }
+        if (sc.background_colour) {
+            terminal::reset_background_colour();
+        }
     }
 };
 
@@ -102,9 +102,8 @@ int main() {
     // }
     frac.render_to_viewport();
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 500; i++) {
         label.text = std::to_string(i);
         frac.render_to_viewport();
-        usleep(100000);
     }
 }

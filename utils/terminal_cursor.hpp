@@ -14,6 +14,12 @@ namespace terminal {
         void move_to_top_left() {
             send_control_code("H");
         }
+        void hide() {
+            send_control_code("?25l");
+        }
+        void show() {
+            send_control_code("?25h");
+        }
 
     } // namespace cursor
 } // namespace terminal
