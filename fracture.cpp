@@ -79,7 +79,7 @@ int main() {
     Fracture frac = Fracture(outer);
 
     KeyPress kp = KeyPress(Key::K_P, ModifierKey::Control | ModifierKey::Shift);
-    label.text = kp.to_string();
+    label.text = to_string(kp);
     frac.render_to_viewport();
 
     // for (int i = 0; i < 100; i++) {

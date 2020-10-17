@@ -24,22 +24,17 @@ namespace terminal {
         tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
     }
 
-    // std::optional<KeyPress> get_key() {
-    //     int keycode = getchar();
-
-    //     if (1 <= keycode && keycode <= 26) {
-    //         return KeyPress(num_to_keycode[keycode - 1], ModifierKey::Control);
-    //     }
-    //     if (65 <= keycode && keycode <= 90) {
-    //         return KeyPress(num_to_keycode[keycode - 65], ModifierKey::Shift);
-    //     }
-    //     if (97 <= keycode && keycode <= 122) {
-    //         return KeyPress(num_to_keycode[keycode - 97]);
-    //     }
-    //     return KeyPress(KeyCode::Null);
-    // }
+    std::optional<KeyPress> get_key() {
+        int keycode = getchar();
+        if (keycode_to_keypress.count(keycode) == 0) {
+            return std::optional<KeyPress>();
+        } else {
+            return keycode_to_keypress.at(keycode);
+        };
+    }
 
     int kbhit() {
+        // Returns the number of characters waiting to be read from stdin
         static const int STDIN = 0;
         static bool initialized = false;
 

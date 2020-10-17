@@ -1,6 +1,4 @@
 #pragma once
-#include "key_press.hpp"
-#include <map>
 
 // The master key list
 enum struct Key {
