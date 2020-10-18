@@ -45,23 +45,22 @@ struct KeyPress {
 #include "key_maps.hpp"
 
 std::string to_string(KeyPress kp) {
-    std::string output = "";
-    // if (kp.modifier_keys & ModifierKey::Control) output += "Control+";
-    // if (kp.modifier_keys & ModifierKey::Shift) output += "Shift+";
-    // if (kp.modifier_keys & ModifierKey::Alt) output += "Alt+";
     if (keypress_to_string.count(kp) > 0) {
-        output += keypress_to_string.at(kp);
+        return keypress_to_string.at(kp);
+    } else {
+        return "";
     }
-    return output;
 }
 
-std::string to_pretty_string(KeyPress kp) {
+std::string to_debug_string(KeyPress kp) {
     std::string output = "";
     if (kp.modifier_keys & ModifierKey::Control) output += "Control+";
     if (kp.modifier_keys & ModifierKey::Shift) output += "Shift+";
     if (kp.modifier_keys & ModifierKey::Alt) output += "Alt+";
-    if (key_to_name.count(kp.key) > 0) {
-        output += key_to_name.at(kp.key);
+    if (key_to_keyname.count(kp.key) > 0) {
+        output += key_to_keyname.at(kp.key);
+    } else {
+        output += "<unknown>";
     }
     return output;
 }

@@ -41,16 +41,22 @@ namespace terminal {
     }
 
     std::optional<KeyPress> get_key() {
-        int keycode = 0;
-        if (kbhit() > 0) {
-            keycode = getchar();
+        std::vector<int> keycodes = {};
+
+        while (kbhit() > 0) {
+            int keycode = getchar();
+            // Ignore [ENTER] when it follows a key combination
+            if (keycodes.size() > 0 && keycode == 10) {
+                break;
+            }
+            keycodes.push_back(keycode);
+            std::cout << keycode << " " << keycodes.size() << "\n";
+        };
+
+        if (keycodes_to_keypress.count(keycodes) > 0) {
+            return keycodes_to_keypress.at(keycodes);
         } else {
             return std::optional<KeyPress>();
-        };
-        if (keycode_to_keypress.count(keycode) == 0) {
-            return std::optional<KeyPress>();
-        } else {
-            return keycode_to_keypress.at(keycode);
-        };
-    }
+        }
+    };
 } // namespace terminal

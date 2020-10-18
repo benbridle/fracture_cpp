@@ -97,12 +97,14 @@ int main() {
     while (true) {
         std::optional<KeyPress> kpo = terminal::get_key();
         if (kpo) {
-            label.text = to_pretty_string(kpo.value());
+            label.text = to_debug_string(kpo.value());
             frac.render_to_viewport();
+            // std::cout << to_debug_string(kpo.value()) + "\n\n";
             if (kpo.value() == KeyPress(Key::K_Q, ModifierKey::Control)) {
                 break;
             }
         };
+        usleep(100000);
     }
 
     // frac.render_to_viewport();
